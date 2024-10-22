@@ -1,10 +1,11 @@
 NAME=mlx_test
-OBJ=0_main.o 1_input.o 
+OBJ=0_main.o 0_house_keeping.o 1_input.o 2_update_position.o 3_draw.o
+MLX=libmlx_Linux.a 
 CFLAGS=-lXext -lX11 -lm -lz -L. libmlx_Linux.a
-CPPFLAGS=-Wall -Wextra -Werror 
+CPPFLAGS=-Wall -Wextra -Werror -g3 
 
 all: $(NAME)
-$(NAME) : $(OBJ)
+$(NAME) :$(MLX) $(OBJ)
 	cc $(OBJ) $(CFLAGS) -o mlx_test
 clean:
 	rm -f *.o
@@ -12,7 +13,8 @@ clean:
 fclean: clean
 	rm -f fdf
 re : fclean all
-
+$(MLX):
+	./configure
 #############
 ## PATERNS ##
 #############

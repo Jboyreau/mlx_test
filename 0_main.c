@@ -1,38 +1,71 @@
 #include "test.h"
 
+int gameLoop(t_scene *scene)
+{
+	t_camera *camera = (*scene).camera;
+	(void)camera;
+	
+	clear(scene);
+	updateCursor(&((*(*scene).screenSpace).cursor), (*scene).keysState);
+	drawSquare(scene, 10, (*(*scene).screenSpace).cursor);
+
+	//Display image.
+	mlx_put_image_to_window(
+		(*(*scene).img).mlx,
+		(*(*scene).img).mlx_win,
+		(*(*scene).img).img,
+		0,
+		0);
+	return 0;
+}
+
+void initCamera(t_camera *camera)
+{
+	(*camera).focalDistance = 5;
+	((*camera).rotations).x = 0;
+	((*camera).rotations).y = 0;
+	((*camera).translations).x = 0;
+	((*camera).translations).y = 0;
+	((*camera).translations).z = 0;
+}
+
+void initScreenSpace(t_screenSpace *screenSpace)
+{
+	(*screenSpace).xOffset = WIDTH / 2;
+	(*screenSpace).yOffset = HIGHT / 2;
+	((*screenSpace).cursor).x = 0;
+	((*screenSpace).cursor).y = 0;
+}
+
+void initKeysState(char *keysState)
+{
+	for (int i = 0; i < KEYSIZE; ++i)
+		*(keysState + i) = 0;
+}
+
 int main(int argc, char **argv)
 {
-	void	*mlx;
-	void	*mlx_win;
 	t_data	img;
+	t_camera camera;
+	t_screenSpace screenSpace;
+	t_scene scene = {.camera = &camera, .screenSpace = &screenSpace, .img = &img};
 
 	(void)argc;(void)argv;
 
-	//Intialisation.
-	mlx = mlx_init();
-	if (mlx == NULL)
-		return 0;
-	//Create window.
-	mlx_win = mlx_new_window(mlx, WIDTH, HIGHT, "MLX_TEST!");
-	if (mlx_win == NULL)
-		return 0;
-	//Image initialisation.
-	img.img = mlx_new_image(mlx, WIDTH, HIGHT);
-	if (img.img == NULL)
-		return 0;
-	img.addr = (int *)mlx_get_data_addr(img.img, &img.bits_per_pixel, &img.line_length,
-			&img.endian);
-	//TEST red screen.
-	for (int i = 0; i < WIDTH * HIGHT; ++i)
-		*(img.addr + i) = BACKGROUND_COLOR;
-	
-	//Display image.
-	mlx_put_image_to_window(mlx, mlx_win, img.img, 0, 0);
+	//Creation window/colorBuffer.
+	if (!houseKeeping(&img))
+		return 1;
+
+	//scene initialisation.
+	initCamera(&camera);
+	initScreenSpace(&screenSpace);
+	initKeysState(scene.keysState);
 
 	//Hooks aka Input Handlers.
-	mlx_hook(mlx_win, 17, 0, close_window, NULL);
-	//TODO study hooks.
+	ft_input(&scene);
+
 	//Start GameLoop.	
-	mlx_loop(mlx);
+	mlx_loop_hook(img.mlx, gameLoop, &scene);
+	mlx_loop(img.mlx);
 	return 0;
 }
