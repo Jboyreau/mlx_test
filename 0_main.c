@@ -15,7 +15,9 @@ int gameLoop(t_scene *scene)
 		(*(*scene).img).mlx_win,
 		(*(*scene).img).img,
 		0,
-		0);
+		0);	
+	sprintf((*(t_scene *)scene).str, "x = %d; y = %d", (*(t_scene *)scene).x, (*(t_scene *)scene).y);
+	mlx_string_put((*(*(t_scene *)scene).img).mlx, (*(*(t_scene *)scene).img).mlx_win, WIDTH >> 5, HEIGHT >> 5, 0, (*(t_scene *)scene).str);
 	return 0;
 }
 
@@ -32,15 +34,17 @@ void initCamera(t_camera *camera)
 void initScreenSpace(t_screenSpace *screenSpace)
 {
 	(*screenSpace).xOffset = WIDTH / 2;
-	(*screenSpace).yOffset = HIGHT / 2;
+	(*screenSpace).yOffset = HEIGHT / 2;
 	((*screenSpace).cursor).x = 0;
 	((*screenSpace).cursor).y = 0;
 }
 
-void initKeysState(char *keysState)
+void initKeysState(char *keysState, char *str)
 {
 	for (int i = 0; i < KEYSIZE; ++i)
 		*(keysState + i) = 0;
+	for (int i = 0; i < 1000; ++i)
+		*(str + i) = 0;
 }
 
 int main(int argc, char **argv)
@@ -59,7 +63,7 @@ int main(int argc, char **argv)
 	//scene initialisation.
 	initCamera(&camera);
 	initScreenSpace(&screenSpace);
-	initKeysState(scene.keysState);
+	initKeysState(scene.keysState, scene.str);
 
 	//Hooks aka Input Handlers.
 	ft_input(&scene);

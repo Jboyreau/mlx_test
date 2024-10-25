@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "mlx.h"
 
-#define HIGHT 1080 
+#define HEIGHT 1080 
 #define WIDTH 1920
 #define BACKGROUND_COLOR 0x00ffffff //ARGB
 #define KEYSIZE 65536
@@ -55,11 +55,14 @@ typedef struct s_screenSpace
 
 /*Scene*/
 typedef struct s_scene
-{
+{	
+	char			keysState[KEYSIZE];
+	char 			str[1000];
 	t_camera		*camera;
 	t_screenSpace	*screenSpace;
 	t_data 			*img;
-	char			keysState[KEYSIZE];
+	int				x;
+	int				y;
 } t_scene;
 
 //0_house_keeping.c

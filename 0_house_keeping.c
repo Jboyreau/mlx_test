@@ -7,12 +7,12 @@ int houseKeeping(t_data *img)
 		return 0;
 
 	//Create window.
-	(*img).mlx_win = mlx_new_window((*img).mlx, WIDTH, HIGHT, "MLX_TEST!");
+	(*img).mlx_win = mlx_new_window((*img).mlx, WIDTH, HEIGHT, "MLX_TEST!");
 	if ((*img).mlx_win == NULL)
 		return 0;
 
 	//Image initialisation.
-	(*img).img = mlx_new_image((*img).mlx, WIDTH, HIGHT);
+	(*img).img = mlx_new_image((*img).mlx, WIDTH, HEIGHT);
 	if ((*img).img == NULL)
 		return 0;
 	(*img).addr = (int *)mlx_get_data_addr(
