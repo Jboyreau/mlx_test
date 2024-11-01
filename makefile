@@ -1,6 +1,6 @@
 SRC_DIR=./src/
 NAME=mlx_test
-OBJ=$(SRC_DIR)0_main.o $(SRC_DIR)0_house_keeping.o $(SRC_DIR)1_input.o $(SRC_DIR)2_update_position.o $(SRC_DIR)3_draw.o
+OBJ=$(SRC_DIR)0_main.o $(SRC_DIR)0_house_keeping.o $(SRC_DIR)0_init.o $(SRC_DIR)1_input.o $(SRC_DIR)2_update_position.o $(SRC_DIR)3_draw.o
 MLX=libmlx_Linux.a 
 CFLAGS=-lXext -lX11 -lm -lz -L. libmlx_Linux.a
 CPPFLAGS=-Wall -Wextra -Werror -g3 
