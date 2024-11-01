@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include "mlx.h"
 
-#define HEIGHT 1080 
-#define WIDTH 1920
+#define HEIGHT 900 
+#define WIDTH 1600
 #define BACKGROUND_COLOR 0x00ffffff //ARGB
 #define KEYSIZE 65536
 
