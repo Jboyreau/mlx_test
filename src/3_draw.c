@@ -4,7 +4,7 @@ void clear(t_scene *scene)
 {
 	//Clear Background.
 	for (int i = 0; i < WIDTH * HEIGHT; ++i)
-		*((*(*scene).img).addr + i) = BACKGROUND_COLOR;
+		*((*(*scene).screenSpace).colorBuffer + i) = BACKGROUND_COLOR;
 }
 
 void drawSquare(t_scene *scene , int size, t_vec2 cursor)
@@ -14,16 +14,14 @@ void drawSquare(t_scene *scene , int size, t_vec2 cursor)
 
 	size = (size >> 1) + ((size <= 1) >> 1);
 	
-	for (int y = (*screenSpace).yOffset - size + cursor.y;
-		y < (*screenSpace).yOffset + size + cursor.y && (y < HEIGHT) && (y > -1);
-		++y
-	)
+	for (int y = (*screenSpace).yOffset - size + cursor.y; y < (*screenSpace).yOffset + size + cursor.y; ++y)
 	{
-		x = (*screenSpace).xOffset - size + cursor.x;
-		for (; 
-			x < (*screenSpace).xOffset + size + cursor.x && (x < WIDTH) && (x > -1);
-			++x
-		)
-			*((*(*scene).img).addr + y * WIDTH + x) = 0x0000ff00;
+		if ((y < HEIGHT) && (y > -1))
+		{
+			x = (*screenSpace).xOffset - size + cursor.x;
+			for (; x < (*screenSpace).xOffset + size + cursor.x; ++x)
+				if ((x < WIDTH) && (x > -1))
+					*((*(*scene).screenSpace).colorBuffer + y * WIDTH + x) = 0x0000ff00;
+		}
 	}
 }

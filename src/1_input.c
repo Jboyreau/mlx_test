@@ -31,8 +31,8 @@ int displayMouseCoordinates(int x, int y, void *scene)
 
 void ft_input(t_scene *scene)
 {
-	mlx_hook((*(*scene).img).mlx_win, 17, 0, close_window, (*(*scene).img).mlx);
-	mlx_hook((*(*scene).img).mlx_win, 2, 1L<<0, keyPress, (*scene).keysState);
-	mlx_hook((*(*scene).img).mlx_win, 3, 1L<<1, keyRelease, (*scene).keysState);	
-	mlx_hook((*(*scene).img).mlx_win, 6, 1L<<6, displayMouseCoordinates, scene);	
+	mlx_hook((*scene).mlx_win, 17, 0, close_window, (*scene).mlx);
+	mlx_hook((*scene).mlx_win, 2, 1L<<0, keyPress, (*scene).keysState);
+	mlx_hook((*scene).mlx_win, 3, 1L<<1, keyRelease, (*scene).keysState);	
+	mlx_hook((*scene).mlx_win, 6, 1L<<6, displayMouseCoordinates, scene);	
 }

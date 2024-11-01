@@ -1,14 +1,13 @@
 #include "test.h"
 
-
 void updateCursor(t_vec2 *cursor, char *keysState)
 {
 	if (*(keysState + XK_Right))
-			++((*cursor).x);
+			(*cursor).x += CURSOR_SPEED * (((*cursor).x + CURSOR_SPEED) < SWIDTH);
 	else if (*(keysState + XK_Left))
-			--((*cursor).x);
+			(*cursor).x -= CURSOR_SPEED * (((*cursor).x - CURSOR_SPEED) > -SWIDTH);
 	else if (*(keysState + XK_Up))
-			--((*cursor).y);
+			(*cursor).y -= CURSOR_SPEED * (((*cursor).y - CURSOR_SPEED) > -SHEIGHT);
 	else if (*(keysState + XK_Down))
-			++((*cursor).y);
+			(*cursor).y += CURSOR_SPEED * (((*cursor).y + CURSOR_SPEED) < SHEIGHT);
 }

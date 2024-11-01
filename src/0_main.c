@@ -7,17 +7,17 @@ int gameLoop(t_scene *scene)
 	
 	clear(scene);
 	updateCursor(&((*(*scene).screenSpace).cursor), (*scene).keysState);
-	drawSquare(scene, 10, (*(*scene).screenSpace).cursor);
+	drawSquare(scene, CURSOR_SIZE, (*(*scene).screenSpace).cursor);
 
 	//Display image.
 	mlx_put_image_to_window(
-		(*(*scene).img).mlx,
-		(*(*scene).img).mlx_win,
-		(*(*scene).img).img,
+		(*scene).mlx,
+		(*scene).mlx_win,
+		(*scene).img,
 		0,
 		0);	
 	sprintf((*(t_scene *)scene).str, "x = %d; y = %d", (*(t_scene *)scene).x, (*(t_scene *)scene).y);
-	mlx_string_put((*(*(t_scene *)scene).img).mlx, (*(*(t_scene *)scene).img).mlx_win, WIDTH >> 5, HEIGHT >> 5, 0, (*(t_scene *)scene).str);
+	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, WIDTH >> 5, HEIGHT >> 5, 0, (*(t_scene *)scene).str);
 	return 0;
 }
 
@@ -31,20 +31,26 @@ void initCamera(t_camera *camera)
 	((*camera).translations).z = 0;
 }
 
-void initScreenSpace(t_screenSpace *screenSpace)
+void initScreenSpace(t_screenSpace *screenSpace, t_data *img)
 {
+	(*screenSpace).colorBuffer = (*img).addr;
 	(*screenSpace).xOffset = WIDTH / 2;
 	(*screenSpace).yOffset = HEIGHT / 2;
 	((*screenSpace).cursor).x = 0;
 	((*screenSpace).cursor).y = 0;
 }
 
-void initKeysState(char *keysState, char *str)
+void initScene(t_scene *scene, t_data *img, t_camera *camera, t_screenSpace *screenSpace)
 {
+	(*scene).camera = camera;
+	(*scene).screenSpace = screenSpace;
+	(*scene).mlx = (*img).mlx;
+	(*scene).mlx_win = (*img).mlx_win;
+	(*scene).img = (*img).img;
 	for (int i = 0; i < KEYSIZE; ++i)
-		*(keysState + i) = 0;
+		*(((*scene).keysState) + i) = 0;
 	for (int i = 0; i < 1000; ++i)
-		*(str + i) = 0;
+		*(((*scene).str) + i) = 0;
 }
 
 int main(int argc, char **argv)
@@ -52,7 +58,7 @@ int main(int argc, char **argv)
 	t_data	img;
 	t_camera camera;
 	t_screenSpace screenSpace;
-	t_scene scene = {.camera = &camera, .screenSpace = &screenSpace, .img = &img};
+	t_scene scene;
 
 	(void)argc;(void)argv;
 
@@ -62,8 +68,8 @@ int main(int argc, char **argv)
 
 	//scene initialisation.
 	initCamera(&camera);
-	initScreenSpace(&screenSpace);
-	initKeysState(scene.keysState, scene.str);
+	initScreenSpace(&screenSpace, &img);
+	initScene(&scene, &img, &camera, &screenSpace);
 
 	//Hooks aka Input Handlers.
 	ft_input(&scene);
