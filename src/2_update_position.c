@@ -1,5 +1,10 @@
 #include "test.h"
 
+//TODO void updateCameraTranslations()
+//TODO void updateCameraRotations()
+//TODO void updateModelTranslations()
+//TODO void updateModelRotations()
+
 void updateCursor(t_vec2 *cursor, char *keysState)
 {
 	if (*(keysState + XK_Right))

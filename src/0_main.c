@@ -15,7 +15,8 @@ int gameLoop(t_scene *scene)
 		(*scene).mlx_win,
 		(*scene).img,
 		0,
-		0);	
+		0);
+	//print mouse coordinates.	
 	sprintf((*(t_scene *)scene).str, "x = %d; y = %d", (int)(*(t_scene *)scene).mouse_coord.x, (int)(*(t_scene *)scene).mouse_coord.y);
 	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, WIDTH >> 5, HEIGHT >> 5, 0, (*(t_scene *)scene).str);
 	return 0;

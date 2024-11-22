@@ -28,6 +28,6 @@ void initScene(t_scene *scene, t_data *img, t_camera *camera, t_screenSpace *scr
 	(*scene).img = (*img).img;
 	for (int i = 0; i < KEYSIZE; ++i)
 		*(((*scene).keysState) + i) = 0;
-	for (int i = 0; i < 1000; ++i)
+	for (int i = 0; i < STR_SIZE; ++i)
 		*(((*scene).str) + i) = 0;
 }

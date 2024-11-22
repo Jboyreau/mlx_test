@@ -5,7 +5,8 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include "mlx.h"
-
+//string
+	#define STR_SIZE 1000
 //cursor
 	#define CURSOR_SPEED 0.4
 	#define CURSOR_SIZE 10
@@ -64,7 +65,7 @@
 	typedef struct s_scene
 	{
 		char			keysState[KEYSIZE];
-		char 			str[1000];
+		char 			str[STR_SIZE];
 		t_vec2			mouse_coord;
 		t_camera		*camera;
 		t_screenSpace	*screenSpace;
