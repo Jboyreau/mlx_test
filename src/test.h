@@ -1,5 +1,8 @@
 #ifndef TEST_H
 	#define TEST_H
+	#include <sys/types.h> //man open.
+	#include <sys/stat.h> //man open.
+	#include <fcntl.h> //man open.
 	#include <X11/keysym.h> //values of all available symboles.
 	#include <unistd.h>
 	#include <stdio.h>
@@ -17,9 +20,24 @@
 	#define WIDTH 1600
 	#define SHEIGHT HEIGHT / 2
 	#define SWIDTH WIDTH / 2
-	#define BACKGROUND_COLOR 0x00ffffff //ARGB
+	#define BACKGROUND_COLOR 0x00ffffff //TRGB
+	#define COLOR_BUFFER_SIZE WIDTH * HEIGHT
 //input
 	#define KEYSIZE 65536
+
+/*Parsing*/
+	typedef struct	s_file
+	{
+		int fd;
+		int modelSize;
+		int readBytes;
+		int readSize;
+		int strSize;
+		int offset;
+		int lines;
+		int columns;
+		char *str;
+	}	t_file;
 
 /*House Keeping*/
 	typedef struct	s_data
@@ -66,6 +84,7 @@
 	{
 		char			keysState[KEYSIZE];
 		char 			str[STR_SIZE];
+		t_vec3			*model;
 		t_vec2			mouse_coord;
 		t_camera		*camera;
 		t_screenSpace	*screenSpace;
@@ -75,6 +94,8 @@
 
 	} t_scene;
 
+//0_parsing.c
+	t_vec3* parsing(char *path);
 //0_house_keeping.c
 	int houseKeeping(t_data *img);
 
@@ -87,7 +108,7 @@
 	void ft_input(t_scene *scene);
 
 //2_update_position.c
-	void updateCursor(t_vec2 *vec, char *keysState);
+	void updateCursor(t_vec2 *vec, char *keysState, void *mlx);
 
 //3_draw.c
 	void clear(t_scene *scene);

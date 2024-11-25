@@ -3,7 +3,7 @@
 void clear(t_scene *scene)
 {
 	//Clear Background.
-	for (int i = 0; i < WIDTH * HEIGHT; ++i)
+	for (int i = 0; i < COLOR_BUFFER_SIZE; ++i)
 		*((*(*scene).screenSpace).colorBuffer + i) = BACKGROUND_COLOR;
 }
 

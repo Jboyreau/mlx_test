@@ -13,8 +13,8 @@ void initCamera(t_camera *camera)
 void initScreenSpace(t_screenSpace *screenSpace, t_data *img)
 {
 	(*screenSpace).colorBuffer = (*img).addr;
-	(*screenSpace).xOffset = WIDTH / 2;
-	(*screenSpace).yOffset = HEIGHT / 2;
+	(*screenSpace).xOffset = SWIDTH;
+	(*screenSpace).yOffset = SHEIGHT;
 	((*screenSpace).cursor).x = 0;
 	((*screenSpace).cursor).y = 0;
 }

@@ -2,11 +2,11 @@
 
 int gameLoop(t_scene *scene)
 {
-	t_camera *camera = (*scene).camera;
-	(void)camera;
+	//t_camera *camera = (*scene).camera;
+	//(void)camera;
 	
 	clear(scene);
-	updateCursor(&((*(*scene).screenSpace).cursor), (*scene).keysState);
+	updateCursor(&((*(*scene).screenSpace).cursor), (*scene).keysState, (*scene).mlx);
 	drawSquare(scene, CURSOR_SIZE, (*(*scene).screenSpace).cursor);
 
 	//Display image.
@@ -29,8 +29,12 @@ int main(int argc, char **argv)
 	t_screenSpace screenSpace;
 	t_scene scene;
 
-	(void)argc;(void)argv;
-
+	if (argc != 2)
+		return (write(2, "Wrong number of argument.\n", 26));
+	//map parsing
+	scene.model = parsing(*(argv + 1));
+	if (scene.model == NULL)
+		return 1;
 	//Creation window/colorBuffer.
 	if (!houseKeeping(&img))
 		return 1;
