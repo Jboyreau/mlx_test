@@ -1,5 +1,12 @@
 #include "test.h"
 
+t_vec3 *populate3dSpace(&file)
+{
+	(*scene).model = malloc((*file).modelSize * sizeof(t_vec3) + COLOR_BUFFER_SIZE * sizeof(float));
+	(*scene).zBuffer = (*scene).model + (*file).modelSize;
+	
+}
+
 void getModelSize(t_file *file)
 {
 	int i = 0;
@@ -17,9 +24,7 @@ void getModelSize(t_file *file)
 		}
 		if (*((*file).str + i) >= '0' && *((*file).str + i) <= '9' || *((*file).str + i) == '-')
 		{	
-			printf("\tchar = %c, ", *((*file).str + i));
 			++((*file).modelSize);
-			printf("modelSize = %d\n", (*file).modelSize);
 			++len;
 			while (*((*file).str + i) >= '0' && *((*file).str + i) <= '9' || *((*file).str + i) == '-')
 				++i;
@@ -29,7 +34,8 @@ void getModelSize(t_file *file)
 		while (*((*file).str + i) == ' ')
 				++i;
 	}
-	printf("lines = %d, longestColumn = %d, modelSize = %d\n", (*file).lines, (*file).columns, (*file).modelSize);
+//DEBUG
+printf("lines = %d, longestColumn = %d, modelSize = %d\n", (*file).lines, (*file).columns, (*file).modelSize);
 }
 
 char increaseVector(t_file *file)
@@ -50,7 +56,7 @@ char increaseVector(t_file *file)
 	return 0;
 }
 
-t_vec3* parsing(char *path)
+void parsing(char *path, t_scene *scene)
 {
 	t_vec3* model = NULL;
 	t_file file = {
@@ -64,7 +70,6 @@ t_vec3* parsing(char *path)
 		.columns = 0,
 		.str = NULL
 	};
-
 	if (path == NULL)
 		return (write(2, "NULL path.\n", 11), NULL);
 	file.fd = open(path, O_RDONLY);
@@ -79,13 +84,15 @@ t_vec3* parsing(char *path)
 	{
 		if (file.offset + file.readSize > file.strSize)
 			if (increaseVector(&file))
-				return (write(2, "malloc failed.\n", 15) , NULL);
+				return (write(2, "malloc failed.\n", 15), NULL);
 		file.readBytes = read(file.fd, file.str + file.offset, file.readSize);
 		file.offset += file.readBytes; 
 	}
+//DEBUG
 printf("%s\n", file.str);
 	getModelSize(&file);
-	//TODO: model = populate3dSpace(&file);
+	populate3dSpace(&file, scene);
+	if ((*scene).model == NULL)
+		return (write(2, "malloc failed.\n", 15), free(file.str), NULL);
 	free(file.str);
-	return (model);
 }

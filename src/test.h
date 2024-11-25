@@ -85,6 +85,7 @@
 		char			keysState[KEYSIZE];
 		char 			str[STR_SIZE];
 		t_vec3			*model;
+		float 			*zBuffer;
 		t_vec2			mouse_coord;
 		t_camera		*camera;
 		t_screenSpace	*screenSpace;

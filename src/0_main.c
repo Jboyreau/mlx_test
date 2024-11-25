@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 	if (argc != 2)
 		return (write(2, "Wrong number of argument.\n", 26));
 	//map parsing
-	scene.model = parsing(*(argv + 1));
+	parsing(*(argv + 1), scene);
 	if (scene.model == NULL)
 		return 1;
 	//Creation window/colorBuffer.
