@@ -13,7 +13,7 @@ void drawSquare(t_scene *scene , int size, t_vec2 cursor)
 	int x;
 
 	size = (size >> 1) + ((size <= 1) >> 1);
-	
+
 	for (int y = (*screenSpace).yOffset - size + cursor.y; y < (*screenSpace).yOffset + size + cursor.y; ++y)
 	{
 		if ((y < HEIGHT) && (y > -1))

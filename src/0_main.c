@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 	if (argc != 2)
 		return (write(2, "Wrong number of argument.\n", 26));
 	//map parsing
-	parsing(*(argv + 1), scene);
+	parsing(*(argv + 1), &scene);
 	if (scene.model == NULL)
 		return 1;
 	//Creation window/colorBuffer.
@@ -50,5 +50,5 @@ int main(int argc, char **argv)
 	//Start GameLoop.	
 	mlx_loop_hook(img.mlx, gameLoop, &scene);
 	mlx_loop(img.mlx);
-	return 0;
+	return (free(scene.model), 0);
 }

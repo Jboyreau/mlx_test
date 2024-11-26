@@ -52,6 +52,11 @@
 	} t_data;
 
 /*Camera/Model Space*/
+	typedef struct s_coordinate2
+	{	
+		int c;
+		int l;
+	} t_coord;
 	typedef struct s_vec2
 	{	
 		float x;
@@ -59,9 +64,10 @@
 	} t_vec2;
 	typedef struct s_vec3
 	{
-		float x;
-		float y;
-		float z;
+		char	isEmpty;
+		float	x;
+		float	y;
+		float	z;
 	} t_vec3;
 	typedef struct s_camera
 	{
@@ -96,7 +102,7 @@
 	} t_scene;
 
 //0_parsing.c
-	t_vec3* parsing(char *path);
+	void parsing(char *path, t_scene *scene);
 //0_house_keeping.c
 	int houseKeeping(t_data *img);
 
