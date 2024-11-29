@@ -7,10 +7,9 @@ int ft_atoiAlt(char *str, int *i)
 
 	sign = 1;
 	if (*(str + *i) == '-')
-	{
-		sign *= -1;
 		(*i)++;
-	}
+	else
+		sign = -sign;
 	while (*(str + *i) >= '0' && *(str + *i) <= '9')
 	{
 		alt = alt * 10 + *(str + *i) - '0';
@@ -20,18 +19,19 @@ int ft_atoiAlt(char *str, int *i)
 }
 
 
-void populate3dSpace(t_file *file, t_scene *scene)
+void populate3dSpace(t_file *file, t_camera *camera, t_screenSpace *screenSpace)
 {
 	t_coord	sqr;
 	int		i;
 	int		z;
 	int		x;
 
-	(*scene).model = NULL;
-	(*scene).model = malloc((*file).lines * (*file).columns * sizeof(t_vec3) + COLOR_BUFFER_SIZE * sizeof(float));
-	if ((*scene).model == NULL)
+	(*camera).model = NULL;
+	(*camera).model = malloc(((*file).lines * (*file).columns * sizeof(t_vec3)) * 2 + COLOR_BUFFER_SIZE * sizeof(float));
+	if ((*camera).model == NULL)
 		return ;
-	(*scene).zBuffer = (float*)((*scene).model + (*file).lines * (*file).columns);
+	(*camera).modelT = ((*camera).model + ((*file).lines * (*file).columns));
+	(*screenSpace).zBuffer = (float*)((*camera).model + (((*file).lines * (*file).columns) * 2));
 	z = (*file).lines / 2;
 	i = 0;
 	sqr.l = 0;
@@ -43,7 +43,7 @@ void populate3dSpace(t_file *file, t_scene *scene)
 		{
 			while (sqr.c < (*file).columns)
 			{
-				(*((*scene).model + sqr.l * (*file).columns + sqr.c)).isEmpty = 1;
+				(*((*camera).model + sqr.l * (*file).columns + sqr.c)).isEmpty = 1;
 				++(sqr.c);
 			}
 			--z;
@@ -54,16 +54,16 @@ void populate3dSpace(t_file *file, t_scene *scene)
 		}
 		if (*((*file).str + i) >= '0' && *((*file).str + i) <= '9' || *((*file).str + i) == '-')
 		{
-			(*((*scene).model + sqr.l * (*file).columns + sqr.c)).y = ft_atoiAlt((*file).str, &i);
-			(*((*scene).model + sqr.l * (*file).columns + sqr.c)).x = x;
-			(*((*scene).model + sqr.l * (*file).columns + sqr.c)).z = z;
-			(*((*scene).model + sqr.l * (*file).columns + sqr.c)).isEmpty = 0;
+			(*((*camera).model + sqr.l * (*file).columns + sqr.c)).y = ft_atoiAlt((*file).str, &i);
+			(*((*camera).model + sqr.l * (*file).columns + sqr.c)).x = x;
+			(*((*camera).model + sqr.l * (*file).columns + sqr.c)).z = z;
+			(*((*camera).model + sqr.l * (*file).columns + sqr.c)).isEmpty = 0;
 //Debug
-printf("x = %f, y = %f, z = %f\n"
-	, (*((*scene).model + sqr.l * (*file).columns + sqr.c)).x
-	, (*((*scene).model + sqr.l * (*file).columns + sqr.c)).y
-	, (*((*scene).model + sqr.l * (*file).columns + sqr.c)).z
-);
+/*printf("x = %f, y = %f, z = %f\n"
+	, (*((*camera).model + sqr.l * (*file).columns + sqr.c)).x
+	, (*((*camera).model + sqr.l * (*file).columns + sqr.c)).y
+	, (*((*camera).model + sqr.l * (*file).columns + sqr.c)).z
+);*/
 			++x;
 			++(sqr.c);
 		}
@@ -74,7 +74,7 @@ printf("x = %f, y = %f, z = %f\n"
 	}
 }
 
-void getModelSize(t_file *file)
+void getModelSize(t_file *file, t_camera *camera)
 {
 	int i = 0;
 	int len = 0;
@@ -101,8 +101,12 @@ void getModelSize(t_file *file)
 		while (*((*file).str + i) == ' ')
 				++i;
 	}
+	(*camera).modelSize = (*file).lines * (*file).columns;
+	(*camera).modelWidth = (*file).columns;
+	(*camera).modelHeight = (*file).lines;
+	((*camera).translations).z = (*file).lines / 2;
 //DEBUG
-printf("lines = %d, longestColumn = %d, modelSize = %d\n", (*file).lines, (*file).columns, (*file).modelSize);
+/*printf("lines = %d, longestColumn = %d, modelSize = %d\n", (*file).lines, (*file).columns, (*file).modelSize);*/
 }
 
 char increaseVector(t_file *file)
@@ -123,7 +127,7 @@ char increaseVector(t_file *file)
 	return 0;
 }
 
-void parsing(char *path, t_scene *scene)
+void parsing(char *path, t_camera *camera, t_screenSpace *screenSpace)
 {
 	t_file file = {
 		.fd = -1,
@@ -155,10 +159,10 @@ void parsing(char *path, t_scene *scene)
 		file.offset += file.readBytes * (file.readBytes > 0); 
 	}
 //DEBUG
-printf("%s\n", file.str);
-	getModelSize(&file);
-	populate3dSpace(&file, scene);
-	if ((*scene).model == NULL)
+/*printf("%s\n", file.str);*/
+	getModelSize(&file, camera);
+	populate3dSpace(&file, camera, screenSpace);
+	if ((*camera).model == NULL)
 		return (write(2, "malloc failed.\n", 15), free(file.str), (void)0);
 	free(file.str);
 }

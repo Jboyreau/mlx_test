@@ -1,5 +1,33 @@
 #include "test.h"
 
+void putPixel(int x, int y, float z, t_screenSpace *screenSpace)
+{	
+	if (x >= -((*screenSpace).xOffset) && x <= ((*screenSpace).xOffset) && y >= -((*screenSpace).yOffset) && y <= ((*screenSpace).yOffset) && z > 0)
+		*((*screenSpace).colorBuffer + (y + (*screenSpace).yOffset) * WIDTH + x + (*screenSpace).xOffset) = DEFAULT_VECTOR_COLOR;
+}
+
+
+void project(t_camera *camera, t_screenSpace *screenSpace)
+{
+	int i;
+	float x;
+	float y;
+	float z;
+
+	i = 0;
+	while (i < (*camera).modelSize)
+	{
+		if (!((*((*camera).model + i)).isEmpty)) 
+		{
+			z = ((*((*camera).model + i)).z + ((*camera).translations).z);
+			x = (((*((*camera).model + i)).x + ((*camera).translations).x) / z) * (*camera).zoom;
+			y = (((*((*camera).model + i)).y + ((*camera).translations).y) / z) * (*camera).zoom;
+			putPixel(x, y, z, screenSpace);
+		}
+		++i;
+	}
+}
+
 void clear(t_scene *scene)
 {
 	//Clear Background.

@@ -2,12 +2,12 @@
 
 void initCamera(t_camera *camera)
 {
+	(*camera).zoom = ZOOM;
 	(*camera).focalDistance = FOCAL_DISTANCE;
 	((*camera).rotations).x = 0;
 	((*camera).rotations).y = 0;
-	((*camera).translations).x = 0;
-	((*camera).translations).y = 0;
-	((*camera).translations).z = 0;
+	((*camera).translations).x = X;
+	((*camera).translations).y = Y;
 }
 
 void initScreenSpace(t_screenSpace *screenSpace, t_data *img)

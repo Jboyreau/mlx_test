@@ -7,7 +7,9 @@ int gameLoop(t_scene *scene)
 	
 	clear(scene);
 	updateCursor(&((*(*scene).screenSpace).cursor), (*scene).keysState, (*scene).mlx);
+	translateScaleModel(&((*(*scene).camera).translations), (*scene).keysState, &((*(*scene).camera).zoom));
 	drawSquare(scene, CURSOR_SIZE, (*(*scene).screenSpace).cursor);
+	project((*scene).camera, (*scene).screenSpace);
 
 	//Display image.
 	mlx_put_image_to_window(
@@ -32,13 +34,12 @@ int main(int argc, char **argv)
 	if (argc != 2)
 		return (write(2, "Wrong number of argument.\n", 26));
 	//map parsing
-	parsing(*(argv + 1), &scene);
-	if (scene.model == NULL)
+	parsing(*(argv + 1), &camera, &screenSpace);
+	if (camera.model == NULL)
 		return 1;
 	//Creation window/colorBuffer.
 	if (!houseKeeping(&img))
 		return 1;
-
 	//scene initialisation.
 	initCamera(&camera);
 	initScreenSpace(&screenSpace, &img);
@@ -50,5 +51,5 @@ int main(int argc, char **argv)
 	//Start GameLoop.	
 	mlx_loop_hook(img.mlx, gameLoop, &scene);
 	mlx_loop(img.mlx);
-	return (free(scene.model), 0);
+	return (free(camera.model), 0);
 }

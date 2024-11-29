@@ -14,12 +14,16 @@
 	#define CURSOR_SPEED 0.4
 	#define CURSOR_SIZE 10
 //camera
+	#define X 0
+	#define Y 0
 	#define FOCAL_DISTANCE 5
 //screenSpace
 	#define HEIGHT 900
 	#define WIDTH 1600
 	#define SHEIGHT HEIGHT / 2
 	#define SWIDTH WIDTH / 2
+	#define ZOOM 200
+	#define DEFAULT_VECTOR_COLOR 0x00000000
 	#define BACKGROUND_COLOR 0x00ffffff //TRGB
 	#define COLOR_BUFFER_SIZE WIDTH * HEIGHT
 //input
@@ -65,24 +69,32 @@
 	typedef struct s_vec3
 	{
 		char	isEmpty;
+		int		color;
 		float	x;
 		float	y;
 		float	z;
 	} t_vec3;
 	typedef struct s_camera
 	{
-		t_vec2 rotations;
-		t_vec3 translations;
-		float focalDistance;
+		int		modelSize;
+		int		modelWidth;
+		int		modelHeight;
+		float	zoom;
+		t_vec2	rotations;
+		t_vec3	translations;
+		float	focalDistance;
+		t_vec3	*model;
+		t_vec3	*modelT;//buffer which contains the model with all the linear translations applied.
 	} t_camera;
 
 /*Screen Space*/
 	typedef struct s_screenSpace
 	{
-		t_vec2 cursor;
-		int	*colorBuffer;
-		int xOffset;
-		int yOffset;
+		int		xOffset;
+		int		yOffset;
+		int		*colorBuffer;
+		float	*zBuffer;//Depth Buffer.
+		t_vec2	cursor;
 	} t_screenSpace;
 
 /*Scene*/
@@ -90,19 +102,16 @@
 	{
 		char			keysState[KEYSIZE];
 		char 			str[STR_SIZE];
-		t_vec3			*model;
-		float 			*zBuffer;
 		t_vec2			mouse_coord;
 		t_camera		*camera;
 		t_screenSpace	*screenSpace;
 		void 			*mlx;
 		void 			*mlx_win;
 		void			*img;
-
 	} t_scene;
 
 //0_parsing.c
-	void parsing(char *path, t_scene *scene);
+	void parsing(char *path, t_camera *camera, t_screenSpace *screenSpace);
 //0_house_keeping.c
 	int houseKeeping(t_data *img);
 
@@ -116,8 +125,10 @@
 
 //2_update_position.c
 	void updateCursor(t_vec2 *vec, char *keysState, void *mlx);
+	void translateScaleModel(t_vec3 *translations, char *keysState, float *zoom);
 
 //3_draw.c
 	void clear(t_scene *scene);
 	void drawSquare(t_scene *scene , int size, t_vec2 cursor);
+	void project(t_camera *camera, t_screenSpace *screenSpace);
 #endif 
