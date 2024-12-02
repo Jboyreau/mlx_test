@@ -1,5 +1,6 @@
 #ifndef TEST_H
 	#define TEST_H
+	#include <math.h> //cos(); sin().
 	#include <sys/types.h> //man open.
 	#include <sys/stat.h> //man open.
 	#include <fcntl.h> //man open.
@@ -14,20 +15,27 @@
 	#define CURSOR_SPEED 0.4
 	#define CURSOR_SIZE 10
 //camera
+	#define ZMIN 2
+	#define ZMAX 1000
+	#define REF_MODEF_DEPTH 100
 	#define X 0
 	#define Y 0
 	#define FOCAL_DISTANCE 5
+	#define STEP 0.4
+	#define ROTATION_MODEL_STEP 0.01
+	#define ROTATION_CAMERA_STEP 0.01
 //screenSpace
 	#define HEIGHT 900
 	#define WIDTH 1600
 	#define SHEIGHT HEIGHT / 2
 	#define SWIDTH WIDTH / 2
-	#define ZOOM 200
+	#define ZOOM 800
+	#define ZOOM_STEP 10
 	#define DEFAULT_VECTOR_COLOR 0x00000000
 	#define BACKGROUND_COLOR 0x00ffffff //TRGB
 	#define COLOR_BUFFER_SIZE WIDTH * HEIGHT
 //input
-	#define KEYSIZE 65536
+	#define KEYSIZE 65537
 
 /*Parsing*/
 	typedef struct	s_file
@@ -61,6 +69,12 @@
 		int c;
 		int l;
 	} t_coord;
+	
+	typedef struct s_vec2Int
+	{	
+		int x;
+		int y;
+	} t_vec2Int;
 	typedef struct s_vec2
 	{	
 		float x;
@@ -74,17 +88,25 @@
 		float	y;
 		float	z;
 	} t_vec3;
+	typedef struct s_biVec3
+	{
+		t_vec3	a;
+		t_vec3	b;
+	} t_biVec3;
 	typedef struct s_camera
 	{
+		int		biVecSize;
 		int		modelSize;
 		int		modelWidth;
 		int		modelHeight;
+		float	step;
 		float	zoom;
 		t_vec2	rotations;
 		t_vec3	translations;
+		t_vec3	modelRotations;
 		float	focalDistance;
 		t_vec3	*model;
-		t_vec3	*modelT;//buffer which contains the model with all the linear translations applied.
+		t_biVec3	*modelT;//buffer which contains the model with all the linear translations applied.
 	} t_camera;
 
 /*Screen Space*/
@@ -102,7 +124,7 @@
 	{
 		char			keysState[KEYSIZE];
 		char 			str[STR_SIZE];
-		t_vec2			mouse_coord;
+		t_vec2Int		mouse_coord;
 		t_camera		*camera;
 		t_screenSpace	*screenSpace;
 		void 			*mlx;
@@ -124,11 +146,13 @@
 	void ft_input(t_scene *scene);
 
 //2_update_position.c
-	void updateCursor(t_vec2 *vec, char *keysState, void *mlx);
-	void translateScaleModel(t_vec3 *translations, char *keysState, float *zoom);
+	void updateCursor(t_vec2 *vec, char *keysState);
+	void translateScaleModel(t_vec3 *translations, char *keysState, float *zoom, float step);
+	void updateModelRotations(t_vec3 *angles, char *keysState);
 
 //3_draw.c
 	void clear(t_scene *scene);
 	void drawSquare(t_scene *scene , int size, t_vec2 cursor);
-	void project(t_camera *camera, t_screenSpace *screenSpace);
+	void project(t_camera *camera, t_screenSpace *screenSpace, t_scene *scene, int i);
+	void projectIso(t_camera *camera, t_screenSpace *screenSpace, t_scene *scene, int i);
 #endif 

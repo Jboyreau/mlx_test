@@ -1,6 +1,6 @@
 #include "test.h"
 
-int ft_atoiAlt(char *str, int *i)
+int ft_atoiAlt(char *str, int *i) //reverseAtoi as increasing y corresponds to "dig" in the negative side of the axis, starting from 0,0 = center. 
 {
 	int alt = 0;
 	int sign;
@@ -18,6 +18,39 @@ int ft_atoiAlt(char *str, int *i)
 	return (alt * sign);
 }
 
+void initBiVector(t_camera *camera, t_vec3 *model, t_biVec3 *modelT)
+{
+	int i;
+	t_coord sqr;
+	
+	sqr.l = 0;
+	i = 0;
+	while (sqr.l < (*camera).modelHeight)
+	{
+		sqr.c = 0;
+		while (sqr.c < (*camera).modelWidth - 1)
+		{
+			(*(modelT + i)).a = *(model + sqr.l * (*camera).modelWidth + sqr.c);
+			(*(modelT + i)).b = *(model + sqr.l * (*camera).modelWidth + sqr.c + 1);
+			++sqr.c;
+			++i;
+		}
+		++sqr.l;
+	}
+	sqr.c = 0;
+	while (sqr.c < (*camera).modelWidth)
+	{
+		sqr.l = 0;
+		while (sqr.l < (*camera).modelHeight - 1)
+		{
+			(*(modelT + i)).a = *(model + sqr.l * (*camera).modelWidth + sqr.c);
+			(*(modelT + i)).b = *(model + (sqr.l + 1) * (*camera).modelWidth + sqr.c);
+			++sqr.l;
+			++i;
+		}
+		++sqr.c;
+	}
+}
 
 void populate3dSpace(t_file *file, t_camera *camera, t_screenSpace *screenSpace)
 {
@@ -27,11 +60,14 @@ void populate3dSpace(t_file *file, t_camera *camera, t_screenSpace *screenSpace)
 	int		x;
 
 	(*camera).model = NULL;
-	(*camera).model = malloc(((*file).lines * (*file).columns * sizeof(t_vec3)) * 2 + COLOR_BUFFER_SIZE * sizeof(float));
+	(*camera).model = malloc(((*file).lines * (*file).columns * sizeof(t_vec3))
+		+ ((*file).lines * ((*file).columns - 1) + ((*file).lines - 1) * (*file).columns) * sizeof(t_biVec3)
+		+ COLOR_BUFFER_SIZE * sizeof(float));
 	if ((*camera).model == NULL)
 		return ;
-	(*camera).modelT = ((*camera).model + ((*file).lines * (*file).columns));
-	(*screenSpace).zBuffer = (float*)((*camera).model + (((*file).lines * (*file).columns) * 2));
+	(*camera).modelT = (t_biVec3*)((*camera).model + ((*file).lines * (*file).columns));
+	(*screenSpace).zBuffer = (float*)((*camera).model + ((*file).lines * (*file).columns)
+		+ ((*file).lines * ((*file).columns - 1) + ((*file).lines - 1) * (*file).columns));
 	z = (*file).lines / 2;
 	i = 0;
 	sqr.l = 0;
@@ -90,7 +126,7 @@ void getModelSize(t_file *file, t_camera *camera)
 			len = 0;
 		}
 		if (*((*file).str + i) >= '0' && *((*file).str + i) <= '9' || *((*file).str + i) == '-')
-		{	
+		{
 			++((*file).modelSize);
 			++len;
 			while (*((*file).str + i) >= '0' && *((*file).str + i) <= '9' || *((*file).str + i) == '-')
@@ -101,6 +137,7 @@ void getModelSize(t_file *file, t_camera *camera)
 		while (*((*file).str + i) == ' ')
 				++i;
 	}
+	(*camera).biVecSize = (*file).lines * ((*file).columns - 1) + ((*file).lines - 1) * (*file).columns; 
 	(*camera).modelSize = (*file).lines * (*file).columns;
 	(*camera).modelWidth = (*file).columns;
 	(*camera).modelHeight = (*file).lines;
@@ -164,5 +201,6 @@ void parsing(char *path, t_camera *camera, t_screenSpace *screenSpace)
 	populate3dSpace(&file, camera, screenSpace);
 	if ((*camera).model == NULL)
 		return (write(2, "malloc failed.\n", 15), free(file.str), (void)0);
+	initBiVector(camera, (*camera).model, (*camera).modelT);
 	free(file.str);
 }

@@ -3,9 +3,8 @@
 //TODO void updateCameraTranslations()
 //TODO void updateCameraRotations()
 //TODO void updateModelTranslations()
-//TODO void updateModelRotations()
 
-void updateCursor(t_vec2 *cursor, char *keysState, void *mlx)
+void updateCursor(t_vec2 *cursor, char *keysState)
 {
 	if (*(keysState + XK_Right))
 			(*cursor).x += CURSOR_SPEED * (((*cursor).x + CURSOR_SPEED) < SWIDTH);
@@ -14,27 +13,41 @@ void updateCursor(t_vec2 *cursor, char *keysState, void *mlx)
 	if (*(keysState + XK_Up))
 			(*cursor).y -= CURSOR_SPEED * (((*cursor).y - CURSOR_SPEED) > -SHEIGHT);
 	else if (*(keysState + XK_Down))
-			(*cursor).y += CURSOR_SPEED * (((*cursor).y + CURSOR_SPEED) < SHEIGHT);	
-	if (*(keysState + XK_Escape))
-		mlx_loop_end(mlx);
+			(*cursor).y += CURSOR_SPEED * (((*cursor).y + CURSOR_SPEED) < SHEIGHT);
 }
 
-void translateScaleModel(t_vec3 *translations, char *keysState, float *zoom)
+void updateModelRotations(t_vec3 *angles, char *keysState)
+{
+	if (*(keysState + XK_Right))
+			(*angles).y = ROTATION_MODEL_STEP;
+	else if (*(keysState + XK_Left))
+			(*angles).y = -ROTATION_MODEL_STEP;
+	else 
+		(*angles).y = 0;
+	if (*(keysState + XK_Up))
+			(*angles).x = ROTATION_MODEL_STEP;
+	else if (*(keysState + XK_Down))
+			(*angles).x = -ROTATION_MODEL_STEP;
+	else 
+		(*angles).x = 0;
+}
+
+void translateScaleModel(t_vec3 *translations, char *keysState, float *zoom, float step)
 {
 	if (*(keysState + XK_KP_Add))
-		*zoom += 0.1;
+		*zoom += ZOOM_STEP;
 	else if (*(keysState + XK_KP_Subtract))
-		*zoom -= 0.1;
+		*zoom -= ZOOM_STEP;
 	if (*(keysState + XK_w))
-		(*translations).z -= 0.1;
+		(*translations).z -= step;
 	else if (*(keysState + XK_s))
-		(*translations).z += 0.1;
+		(*translations).z += step;
 	if (*(keysState + XK_d))
-		(*translations).x -= 0.1;
+		(*translations).x -= step;
 	else if (*(keysState + XK_a))
-		(*translations).x += 0.1;
+		(*translations).x += step;
 	if (*(keysState + XK_Page_Up))
-		(*translations).y += 0.1;
+		(*translations).y += step;
 	else if (*(keysState + XK_Page_Down))
-		(*translations).y -= 0.1;
+		(*translations).y -= step;
 }

@@ -2,10 +2,14 @@
 
 void initCamera(t_camera *camera)
 {
+	(*camera).step = ((float)((*camera).modelHeight) * (float)STEP) / (float)REF_MODEF_DEPTH;
 	(*camera).zoom = ZOOM;
 	(*camera).focalDistance = FOCAL_DISTANCE;
 	((*camera).rotations).x = 0;
 	((*camera).rotations).y = 0;
+	((*camera).modelRotations).x = 0;
+	((*camera).modelRotations).y = 0;
+	((*camera).modelRotations).z = 0;
 	((*camera).translations).x = X;
 	((*camera).translations).y = Y;
 }
@@ -21,6 +25,8 @@ void initScreenSpace(t_screenSpace *screenSpace, t_data *img)
 
 void initScene(t_scene *scene, t_data *img, t_camera *camera, t_screenSpace *screenSpace)
 {
+	((*scene).mouse_coord).x = 0;
+	((*scene).mouse_coord).y = 0;
 	(*scene).camera = camera;
 	(*scene).screenSpace = screenSpace;
 	(*scene).mlx = (*img).mlx;

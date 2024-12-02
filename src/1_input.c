@@ -10,6 +10,11 @@ int keyPress(int keycode, void *keysState)
 {
 	(void)keysState;
 	*((char *)keysState + keycode) = 1;
+	if (keycode == XK_i)
+		*((char *)keysState + KEYSIZE - 1) = 1;
+	if (keycode == XK_p)
+		*((char *)keysState + KEYSIZE - 1) = 0;
+		
 	return 0;
 }
 
