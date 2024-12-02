@@ -2,9 +2,7 @@
 
 void putPixel(int x, int y, t_screenSpace *screenSpace)
 {
-	if ((x >= -((*screenSpace).xOffset) && x <= ((*screenSpace).xOffset))
-		&& (y >= -((*screenSpace).yOffset) && y <= ((*screenSpace).yOffset)))
-		*((*screenSpace).colorBuffer + (y + (*screenSpace).yOffset) * WIDTH + x + (*screenSpace).xOffset) = DEFAULT_VECTOR_COLOR;
+	*((*screenSpace).colorBuffer + (y + (*screenSpace).yOffset) * WIDTH + x + (*screenSpace).xOffset) = DEFAULT_VECTOR_COLOR;
 }
 
 void rotateModel(t_biVec3 *biVector, t_vec3 *angles)
@@ -70,14 +68,14 @@ void drawLineDDA(t_biVec3 *biVec, t_screenSpace *screenSpace, float steps)
 }
 
 
-void rotateCamera(t_biVec3 *biVector, t_vec2Int *mouse_coord, float xMax, float yMax)
+void rotateCamera(t_biVec3 *biVector, t_camera *camera)
 {
 	float x;
 	float y;
 	float z;
 	float angle;
 
-	angle = (((*mouse_coord).x - xMax) * M_PI) / xMax;	
+	angle = (*camera).angleY.value;
 	x = (*biVector).a.x * cos(angle) - (*biVector).a.z * sin(angle);
 	z = (*biVector).a.z * cos(angle) + (*biVector).a.x * sin(angle);
 	(*biVector).a.x = x;
@@ -86,7 +84,7 @@ void rotateCamera(t_biVec3 *biVector, t_vec2Int *mouse_coord, float xMax, float 
 	z = (*biVector).b.z * cos(angle) + (*biVector).b.x * sin(angle);
 	(*biVector).b.x = x;
 	(*biVector).b.z = z;
-	angle = -(((*mouse_coord).y - yMax) * 1.5708) / yMax;
+	angle = (*camera).angleX.value;
 	z = (*biVector).a.z * cos(angle) - (*biVector).a.y * sin(angle);
 	y = (*biVector).a.y * cos(angle) + (*biVector).a.z * sin(angle);
 	(*biVector).a.z = z;
@@ -129,6 +127,11 @@ void projectIso(t_camera *camera, t_screenSpace *screenSpace, t_scene (*scene), 
 	float		zoom;
 	t_biVec3	biVector;
 
+	//calculer et sauvegarder la valeur de l'angle definit par la direction de la camera.
+	(*camera).angleY.value = (((*scene).mouse_coord.x - (*screenSpace).xOffset) * M_PI) / (*screenSpace).xOffset;
+	(*camera).angleX.value = -(((*scene).mouse_coord.y - (*screenSpace).yOffset) * M_PI) / (*screenSpace).yOffset;
+	(*camera).angleY.cos = cos((*camera).angleY.value);
+	(*camera).angleY.sin = sin((*camera).angleY.value);
 	i = 0;
 	while (i < (*camera).biVecSize)
 	{
@@ -138,7 +141,7 @@ void projectIso(t_camera *camera, t_screenSpace *screenSpace, t_scene (*scene), 
 			biVector = *((*camera).modelT + i);
 			rotateIso(&biVector);
 			addTranslations(&biVector, &((*camera).translations));
-			rotateCamera(&biVector, &((*scene).mouse_coord), (*screenSpace).xOffset, (*screenSpace).yOffset);
+			rotateCamera(&biVector, camera);
 			zoom = (*camera).zoom / 15;
 			biVector.a.x = (biVector).a.x * zoom;
 			biVector.a.y = (biVector).a.y * zoom;
@@ -155,6 +158,11 @@ void project(t_camera *camera, t_screenSpace *screenSpace, t_scene (*scene), int
 	float		z;
 	t_biVec3	biVector;
 
+	//calculer et sauvegarder la valeur de l'angle definit par la direction de la camera.
+	(*camera).angleY.value = (((*scene).mouse_coord.x - (*screenSpace).xOffset) * M_PI) / (*screenSpace).xOffset;
+	(*camera).angleX.value = -(((*scene).mouse_coord.y - (*screenSpace).yOffset) * 1.5708) / (*screenSpace).yOffset;
+	(*camera).angleY.cos = cos((*camera).angleY.value);
+	(*camera).angleY.sin = sin((*camera).angleY.value);
 	i = 0;
 	while (i < (*camera).biVecSize)
 	{
@@ -163,19 +171,20 @@ void project(t_camera *camera, t_screenSpace *screenSpace, t_scene (*scene), int
 			rotateModel((*camera).modelT + i, &((*camera).modelRotations));
 			biVector = *((*camera).modelT + i);
 			addTranslations(&biVector, &((*camera).translations));
-			rotateCamera(&biVector, &((*scene).mouse_coord), (*screenSpace).xOffset, (*screenSpace).yOffset);
-			//TODO: clip(&biVector);
+			rotateCamera(&biVector, camera);
 			if (((biVector).a.z) > ZMIN && ((biVector).b.z) > ZMIN)
 			{
 				z = (*camera).zoom / (biVector).a.z;
 				biVector.a.x = (biVector).a.x * z;
 				biVector.a.y = (biVector).a.y * z;
-				//putPixel(p1.x, p1.y, screenSpace, z); 
 				z = (*camera).zoom / (biVector).b.z;
 				biVector.b.x = (biVector).b.x * z;
 				biVector.b.y = (biVector).b.y * z;
-				//putPixel(p2.x, p2.y, screenSpace, z);
-				drawLineDDA(&biVector, screenSpace, 0);
+				if ((biVector.a.x >= -((*screenSpace).xOffset) && biVector.a.x <= ((*screenSpace).xOffset))
+						&& (biVector.a.y >= -((*screenSpace).yOffset) && biVector.a.y <= ((*screenSpace).yOffset))
+						&& (biVector.b.x >= -((*screenSpace).xOffset) && biVector.b.x <= ((*screenSpace).xOffset))
+						&& (biVector.b.y >= -((*screenSpace).yOffset) && biVector.b.y <= ((*screenSpace).yOffset)))
+					drawLineDDA(&biVector, screenSpace, 0);
 			}
 		}
 		++i;

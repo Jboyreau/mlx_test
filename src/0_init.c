@@ -12,6 +12,10 @@ void initCamera(t_camera *camera)
 	((*camera).modelRotations).z = 0;
 	((*camera).translations).x = X;
 	((*camera).translations).y = Y;
+	(*camera).angleX.cos = 1;
+	(*camera).angleX.sin = 1;
+	(*camera).angleY.cos = 1;
+	(*camera).angleY.sin = 1;
 }
 
 void initScreenSpace(t_screenSpace *screenSpace, t_data *img)

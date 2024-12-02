@@ -72,14 +72,20 @@
 	
 	typedef struct s_vec2Int
 	{	
-		int x;
-		int y;
+		int	x;
+		int	y;
 	} t_vec2Int;
 	typedef struct s_vec2
 	{	
-		float x;
-		float y;
+		float	x;
+		float	y;
 	} t_vec2;
+	typedef struct s_angle
+	{
+		float	value;
+		float	cos;
+		float	sin;
+	} t_angle;
 	typedef struct s_vec3
 	{
 		char	isEmpty;
@@ -101,6 +107,8 @@
 		int		modelHeight;
 		float	step;
 		float	zoom;
+		t_angle	angleX;
+		t_angle	angleY;
 		t_vec2	rotations;
 		t_vec3	translations;
 		t_vec3	modelRotations;
@@ -147,7 +155,7 @@
 
 //2_update_position.c
 	void updateCursor(t_vec2 *vec, char *keysState);
-	void translateScaleModel(t_vec3 *translations, char *keysState, float *zoom, float step);
+	void translateScaleModel(t_camera *camera, char *keysState, float *zoom, float step);
 	void updateModelRotations(t_vec3 *angles, char *keysState);
 
 //3_draw.c

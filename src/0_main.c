@@ -2,14 +2,9 @@
 
 int gameLoop(t_scene *scene)
 {
-	//t_camera *camera = (*scene).camera;
-	//(void)camera;
-
 	clear(scene);
-//	updateCursor(&((*(*scene).screenSpace).cursor), (*scene).keysState);
-	translateScaleModel(&((*(*scene).camera).translations), (*scene).keysState, &((*(*scene).camera).zoom), (*(*scene).camera).step);
+	translateScaleModel((*scene).camera, (*scene).keysState, &((*(*scene).camera).zoom), (*(*scene).camera).step);
 	updateModelRotations(&((*(*scene).camera).modelRotations), (*scene).keysState);
-//	drawSquare(scene, CURSOR_SIZE, (*(*scene).screenSpace).cursor);
 	if (*((*scene).keysState + KEYSIZE - 1))
 		projectIso((*scene).camera, (*scene).screenSpace, scene, 0);
 	else
@@ -22,15 +17,15 @@ int gameLoop(t_scene *scene)
 		0,
 		0);
 	//print mouse coordinates.	
-	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 40, 0, "UP       : PageUP.");
-	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 60, 0, "DOWN     : PageDown.");
-	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 80, 0, "FORWARD  : w.");
-	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 100, 0,"BACKWARD : s.");
-	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 120, 0,"LEFT     : a.");
-	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 140, 0,"RIGHT    : d.");
-	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 160, 0,"Persp    : p.");
-	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 180, 0,"ISO      : i.");
-	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 200, 0,"Rotation : arrrows.");
+	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 40, 0, "UP          : space.");
+	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 60, 0, "DOWN        : shiftL.");
+	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 80, 0, "FORWARD     : w.");
+	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 100, 0,"BACKWARD    : s.");
+	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 120, 0,"LEFT        : a.");
+	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 140, 0,"RIGHT       : d.");
+	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 160, 0,"Perspective : p.");
+	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 180, 0,"Isometrique : i.");
+	mlx_string_put((*(t_scene *)scene).mlx, (*(t_scene *)scene).mlx_win, 50, 200, 0,"Rotation    : arrrows.");
 	if (*((*scene).keysState + XK_Escape))
 		mlx_loop_end((*scene).mlx);
 	return 0;
