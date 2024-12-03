@@ -97,8 +97,6 @@ void rotateCamera(t_biVec3 *biVector, t_camera *camera)
 
 void rotateIso(t_biVec3 *biVector)
 {
-	//x 0.61548
-	//y 0.7854
 	float x;
 	float y;
 	float z;
@@ -147,7 +145,11 @@ void projectIso(t_camera *camera, t_screenSpace *screenSpace, t_scene (*scene), 
 			biVector.a.y = (biVector).a.y * zoom;
 			biVector.b.x = (biVector).b.x * zoom;
 			biVector.b.y = (biVector).b.y * zoom;
-			drawLineDDA(&biVector, screenSpace, 0);
+			if ((biVector.a.x >= -((*screenSpace).xOffset) && biVector.a.x <= ((*screenSpace).xOffset))
+					&& (biVector.a.y >= -((*screenSpace).yOffset) && biVector.a.y <= ((*screenSpace).yOffset))
+					&& (biVector.b.x >= -((*screenSpace).xOffset) && biVector.b.x <= ((*screenSpace).xOffset))
+					&& (biVector.b.y >= -((*screenSpace).yOffset) && biVector.b.y <= ((*screenSpace).yOffset)))
+				drawLineDDA(&biVector, screenSpace, 0);
 		}
 		++i;
 	}
