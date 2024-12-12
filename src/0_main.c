@@ -3,12 +3,12 @@
 int gameLoop(t_scene *scene)
 {
 	clear(scene);
-	translateScaleModel((*scene).camera, (*scene).keysState, &((*(*scene).camera).zoom), (*(*scene).camera).step);
-	updateModelRotations(&((*(*scene).camera).modelRotations), (*scene).keysState);
+	translateScaleModel(scene, (*scene).camera, (*scene).screenSpace, (*scene).keysState);
+	updateModelRotations((*scene).camera, (*scene).keysState);
 	if (*((*scene).keysState + KEYSIZE - 1))
-		projectIso((*scene).camera, (*scene).screenSpace, scene, 0);
+		projectIso((*scene).camera, (*scene).screenSpace, 0);
 	else
-		project((*scene).camera, (*scene).screenSpace, scene, 0);
+		project((*scene).camera, (*scene).screenSpace, 0);
 	//Display image.
 	mlx_put_image_to_window(
 		(*scene).mlx,

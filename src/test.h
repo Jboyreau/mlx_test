@@ -80,6 +80,11 @@
 		float	x;
 		float	y;
 	} t_vec2;
+	typedef struct s_cosSin
+	{	
+		float	cos;
+		float	sin;
+	} t_cosSin;
 	typedef struct s_angle
 	{
 		float	value;
@@ -107,8 +112,11 @@
 		int		modelHeight;
 		float	step;
 		float	zoom;
-		t_angle	angleX;
-		t_angle	angleY;
+		t_angle	angleX; //camera angle
+		t_angle	angleY; //camera angle
+		t_cosSin	cosSinX; //model angle
+		t_cosSin	cosSinY; //model angle
+		t_vec2	cosSinZ; //model angle
 		t_vec2	rotations;
 		t_vec3	translations;
 		t_vec3	modelRotations;
@@ -155,12 +163,12 @@
 
 //2_update_position.c
 	void updateCursor(t_vec2 *vec, char *keysState);
-	void translateScaleModel(t_camera *camera, char *keysState, float *zoom, float step);
-	void updateModelRotations(t_vec3 *angles, char *keysState);
+	void translateScaleModel(t_scene *scene, t_camera *camera, t_screenSpace *screenSpace, char *keysState);
+	void updateModelRotations(t_camera* camera, char* keysState);
 
 //3_draw.c
 	void clear(t_scene *scene);
 	void drawSquare(t_scene *scene , int size, t_vec2 cursor);
-	void project(t_camera *camera, t_screenSpace *screenSpace, t_scene *scene, int i);
-	void projectIso(t_camera *camera, t_screenSpace *screenSpace, t_scene *scene, int i);
+	void project(t_camera *camera, t_screenSpace *screenSpace, int i);
+	void projectIso(t_camera *camera, t_screenSpace *screenSpace, int i);
 #endif 

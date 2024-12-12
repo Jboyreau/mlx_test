@@ -10,7 +10,9 @@ $(NAME) :$(MLX) $(OBJ)
 	cc $(OBJ) -L. libmlx_Linux.a -lX11 -lXext $(CFLAGS) -o $(NAME)
 clean:	
 	rm -f $(SRC_DIR)*.o
+fclean:
 	rm $(NAME)
+	rm *.a
 re : clean all
 
 $(MLX):

@@ -5,27 +5,27 @@ void putPixel(int x, int y, t_screenSpace *screenSpace)
 	*((*screenSpace).colorBuffer + (y + (*screenSpace).yOffset) * WIDTH + x + (*screenSpace).xOffset) = DEFAULT_VECTOR_COLOR;
 }
 
-void rotateModel(t_biVec3 *biVector, t_vec3 *angles)
+void rotateModel(t_biVec3 *biVector, t_cosSin *csX, t_cosSin *csY)
 {
 	float x;
 	float y;
 	float z;
 
-	z = (*biVector).a.z * cos((*angles).x) - (*biVector).a.y * sin((*angles).x);
-	y = (*biVector).a.y * cos((*angles).x) + (*biVector).a.z * sin((*angles).x);
+	z = (*biVector).a.z * (*csX).cos - (*biVector).a.y * (*csX).sin;
+	y = (*biVector).a.y * (*csX).cos + (*biVector).a.z * (*csX).sin;
 	(*biVector).a.z = z;
 	(*biVector).a.y = y;
-	x = (*biVector).a.x * cos((*angles).y) - (*biVector).a.z * sin((*angles).y);
-	z = (*biVector).a.z * cos((*angles).y) + (*biVector).a.x * sin((*angles).y);
+	x = (*biVector).a.x * (*csY).cos - (*biVector).a.z * (*csY).sin;
+	z = (*biVector).a.z * (*csY).cos + (*biVector).a.x * (*csY).sin;
 	(*biVector).a.x = x;
 	(*biVector).a.z = z;
 	
-	z = (*biVector).b.z * cos((*angles).x) - (*biVector).b.y * sin((*angles).x);
-	y = (*biVector).b.y * cos((*angles).x) + (*biVector).b.z * sin((*angles).x);
+	z = (*biVector).b.z * (*csX).cos - (*biVector).b.y * (*csX).sin;
+	y = (*biVector).b.y * (*csX).cos + (*biVector).b.z * (*csX).sin;
 	(*biVector).b.z = z;
 	(*biVector).b.y = y;
-	x = (*biVector).b.x * cos((*angles).y) - (*biVector).b.z * sin((*angles).y);
-	z = (*biVector).b.z * cos((*angles).y) + (*biVector).b.x * sin((*angles).y);
+	x = (*biVector).b.x * (*csY).cos - (*biVector).b.z * (*csY).sin;
+	z = (*biVector).b.z * (*csY).cos + (*biVector).b.x * (*csY).sin;
 	(*biVector).b.x = x;
 	(*biVector).b.z = z;
 }
@@ -120,22 +120,17 @@ void rotateIso(t_biVec3 *biVector)
 	(*biVector).b.z = z;
 }
 
-void projectIso(t_camera *camera, t_screenSpace *screenSpace, t_scene (*scene), int i)
+void projectIso(t_camera *camera, t_screenSpace *screenSpace, int i)
 {
 	float		zoom;
 	t_biVec3	biVector;
 
-	//calculer et sauvegarder la valeur de l'angle definit par la direction de la camera.
-	(*camera).angleY.value = (((*scene).mouse_coord.x - (*screenSpace).xOffset) * M_PI) / (*screenSpace).xOffset;
-	(*camera).angleX.value = -(((*scene).mouse_coord.y - (*screenSpace).yOffset) * M_PI) / (*screenSpace).yOffset;
-	(*camera).angleY.cos = cos((*camera).angleY.value);
-	(*camera).angleY.sin = sin((*camera).angleY.value);
 	i = 0;
 	while (i < (*camera).biVecSize)
 	{
 		if (!((*((*camera).modelT + i)).a.isEmpty) && !((*((*camera).modelT + i)).b.isEmpty)) 
 		{
-			rotateModel((*camera).modelT + i, &((*camera).modelRotations));
+			rotateModel((*camera).modelT + i, &((*camera).cosSinX), &((*camera).cosSinY));
 			biVector = *((*camera).modelT + i);
 			rotateIso(&biVector);
 			addTranslations(&biVector, &((*camera).translations));
@@ -155,22 +150,16 @@ void projectIso(t_camera *camera, t_screenSpace *screenSpace, t_scene (*scene), 
 	}
 }
 
-void project(t_camera *camera, t_screenSpace *screenSpace, t_scene (*scene), int i)
+void project(t_camera *camera, t_screenSpace *screenSpace, int i)
 {
 	float		z;
 	t_biVec3	biVector;
-
-	//calculer et sauvegarder la valeur de l'angle definit par la direction de la camera.
-	(*camera).angleY.value = (((*scene).mouse_coord.x - (*screenSpace).xOffset) * M_PI) / (*screenSpace).xOffset;
-	(*camera).angleX.value = -(((*scene).mouse_coord.y - (*screenSpace).yOffset) * 1.5708) / (*screenSpace).yOffset;
-	(*camera).angleY.cos = cos((*camera).angleY.value);
-	(*camera).angleY.sin = sin((*camera).angleY.value);
 	i = 0;
 	while (i < (*camera).biVecSize)
 	{
 		if (!((*((*camera).modelT + i)).a.isEmpty) && !((*((*camera).modelT + i)).b.isEmpty)) 
 		{
-			rotateModel((*camera).modelT + i, &((*camera).modelRotations));
+			rotateModel((*camera).modelT + i, &((*camera).cosSinX), &((*camera).cosSinY));
 			biVector = *((*camera).modelT + i);
 			addTranslations(&biVector, &((*camera).translations));
 			rotateCamera(&biVector, camera);
