@@ -5,8 +5,6 @@ void initCamera(t_camera *camera)
 	(*camera).step = ((float)((*camera).modelHeight) * (float)STEP) / (float)REF_MODEF_DEPTH;
 	(*camera).zoom = ZOOM;
 	(*camera).focalDistance = FOCAL_DISTANCE;
-	((*camera).rotations).x = 0;
-	((*camera).rotations).y = 0;
 	((*camera).modelRotations).x = 0;
 	((*camera).modelRotations).y = 0;
 	((*camera).modelRotations).z = 0;
@@ -16,6 +14,10 @@ void initCamera(t_camera *camera)
 	(*camera).angleX.sin = 1;
 	(*camera).angleY.cos = 1;
 	(*camera).angleY.sin = 1;
+	(*camera).saveCosSin.cos = cos(ROTATION_MODEL_STEP);
+	(*camera).saveCosSin.sin = sin(ROTATION_MODEL_STEP);
+	(*camera).minusSaveCosSin.cos = cos(-ROTATION_MODEL_STEP);
+	(*camera).minusSaveCosSin.sin = sin(-ROTATION_MODEL_STEP);
 }
 
 void initScreenSpace(t_screenSpace *screenSpace, t_data *img)

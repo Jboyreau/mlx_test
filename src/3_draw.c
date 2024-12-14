@@ -73,24 +73,22 @@ void rotateCamera(t_biVec3 *biVector, t_camera *camera)
 	float x;
 	float y;
 	float z;
-	float angle;
 
-	angle = (*camera).angleY.value;
-	x = (*biVector).a.x * cos(angle) - (*biVector).a.z * sin(angle);
-	z = (*biVector).a.z * cos(angle) + (*biVector).a.x * sin(angle);
+	x = (*biVector).a.x * (*camera).angleY.cos - (*biVector).a.z * (*camera).angleY.sin;
+	z = (*biVector).a.z * (*camera).angleY.cos + (*biVector).a.x * (*camera).angleY.sin;
 	(*biVector).a.x = x;
 	(*biVector).a.z = z;
-	x = (*biVector).b.x * cos(angle) - (*biVector).b.z * sin(angle);
-	z = (*biVector).b.z * cos(angle) + (*biVector).b.x * sin(angle);
+	x = (*biVector).b.x * (*camera).angleY.cos - (*biVector).b.z * (*camera).angleY.sin;
+	z = (*biVector).b.z * (*camera).angleY.cos + (*biVector).b.x * (*camera).angleY.sin;
 	(*biVector).b.x = x;
 	(*biVector).b.z = z;
-	angle = (*camera).angleX.value;
-	z = (*biVector).a.z * cos(angle) - (*biVector).a.y * sin(angle);
-	y = (*biVector).a.y * cos(angle) + (*biVector).a.z * sin(angle);
+
+	z = (*biVector).a.z * (*camera).angleX.cos - (*biVector).a.y * (*camera).angleX.sin;
+	y = (*biVector).a.y * (*camera).angleX.cos + (*biVector).a.z * (*camera).angleX.sin;
 	(*biVector).a.z = z;
 	(*biVector).a.y = y;
-	z = (*biVector).b.z * cos(angle) - (*biVector).b.y * sin(angle);
-	y = (*biVector).b.y * cos(angle) + (*biVector).b.z * sin(angle);
+	z = (*biVector).b.z * (*camera).angleX.cos - (*biVector).b.y * (*camera).angleX.sin;
+	y = (*biVector).b.y * (*camera).angleX.cos + (*biVector).b.z * (*camera).angleX.sin;
 	(*biVector).b.z = z;
 	(*biVector).b.y = y;
 }
@@ -101,23 +99,23 @@ void rotateIso(t_biVec3 *biVector)
 	float y;
 	float z;
 
-	z = (*biVector).a.z * cos(0.61548) - (*biVector).a.y * sin(0.61548);
-	y = (*biVector).a.y * cos(0.61548) + (*biVector).a.z * sin(0.61548);
-	(*biVector).a.z = z;
-	(*biVector).a.y = y;
-	x = (*biVector).a.x * cos(0.7854) - (*biVector).a.z * sin(0.7854);
-	z = (*biVector).a.z * cos(0.7854) + (*biVector).a.x * sin(0.7854);
+	x = (*biVector).a.x * cos(-0.7854) - (*biVector).a.z * sin(-0.7854);
+	z = (*biVector).a.z * cos(-0.7854) + (*biVector).a.x * sin(-0.7854);
 	(*biVector).a.x = x;
 	(*biVector).a.z = z;
+	z = (*biVector).a.z * cos(-0.61548) - (*biVector).a.y * sin(-0.61548);
+	y = (*biVector).a.y * cos(-0.61548) + (*biVector).a.z * sin(-0.61548);
+	(*biVector).a.z = z;
+	(*biVector).a.y = y;
 	
-	z = (*biVector).b.z * cos(0.61548) - (*biVector).b.y * sin(0.61548);
-	y = (*biVector).b.y * cos(0.61548) + (*biVector).b.z * sin(0.61548);
-	(*biVector).b.z = z;
-	(*biVector).b.y = y;
-	x = (*biVector).b.x * cos(0.7854) - (*biVector).b.z * sin(0.7854);
-	z = (*biVector).b.z * cos(0.7854) + (*biVector).b.x * sin(0.7854);
+	x = (*biVector).b.x * cos(-0.7854) - (*biVector).b.z * sin(-0.7854);
+	z = (*biVector).b.z * cos(-0.7854) + (*biVector).b.x * sin(-0.7854);
 	(*biVector).b.x = x;
 	(*biVector).b.z = z;
+	z = (*biVector).b.z * cos(-0.61548) - (*biVector).b.y * sin(-0.61548);
+	y = (*biVector).b.y * cos(-0.61548) + (*biVector).b.z * sin(-0.61548);
+	(*biVector).b.z = z;
+	(*biVector).b.y = y;
 }
 
 void projectIso(t_camera *camera, t_screenSpace *screenSpace, int i)

@@ -112,12 +112,16 @@
 		int		modelHeight;
 		float	step;
 		float	zoom;
-		t_angle	angleX; //camera angle
-		t_angle	angleY; //camera angle
-		t_cosSin	cosSinX; //model angle
-		t_cosSin	cosSinY; //model angle
-		t_vec2	cosSinZ; //model angle
-		t_vec2	rotations;
+		// camera rotation angles :
+			t_angle	angleX;
+			t_angle	angleY;
+			t_angle angleZ; //not implemented
+		//model's rotaion angles cos & sin :
+			t_cosSin	cosSinX;
+			t_cosSin	cosSinY;
+			t_cosSin	cosSinZ; //not implemented
+			t_cosSin	saveCosSin;
+			t_cosSin	minusSaveCosSin;	
 		t_vec3	translations;
 		t_vec3	modelRotations;
 		float	focalDistance;
